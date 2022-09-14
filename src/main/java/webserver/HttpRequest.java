@@ -16,7 +16,6 @@ public class HttpRequest {
     String path;
 
     public HttpRequest(InputStream inputStream) {
-        // InputStream을 BufferReader로 읽고 파싱하여 인스턴스 변수 초기화
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
             String line = br.readLine();
@@ -34,5 +33,4 @@ public class HttpRequest {
             logger.error(e.getMessage());
         }
     }
-
 }
