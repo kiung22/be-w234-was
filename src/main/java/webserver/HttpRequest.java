@@ -3,10 +3,10 @@ package webserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 
 public class HttpRequest {
 
@@ -14,6 +14,7 @@ public class HttpRequest {
 
     private HttpMethod method;
     private String path;
+    private HashMap<String, String> query;
 
     public HttpRequest(InputStream inputStream) {
         try {
@@ -21,9 +22,12 @@ public class HttpRequest {
             String line = br.readLine();
             String[] tokens = line.split(" ");
             method = HttpMethod.valueOf(tokens[0]);
-            path = tokens[1];
+            String[] queryTokens = tokens[1].split("\\?");
+            path = queryTokens[0];
+            query = parseQuery(queryTokens);
             logger.info("Http Method: {}", method);
             logger.info("Http Path: {}", path);
+            logger.info("Http Query: {}", query);
             while (!"".equals(line)) {
                 logger.debug(line);
                 line = br.readLine();
@@ -34,11 +38,31 @@ public class HttpRequest {
         }
     }
 
+    private HashMap<String, String> parseQuery(String[] queryTokens) throws UnsupportedEncodingException {
+        HashMap<String, String> queryMap = new HashMap<>();
+        if (queryTokens.length < 2) {
+            return queryMap;
+        }
+        String[] pairs = queryTokens[1].split("&");
+        for (String pair : pairs) {
+            int idx = pair.indexOf("=");
+            queryMap.put(
+                    URLDecoder.decode(pair.substring(0, idx), StandardCharsets.UTF_8),
+                    URLDecoder.decode(pair.substring(idx + 1), StandardCharsets.UTF_8)
+            );
+        }
+        return queryMap;
+    }
+
     public HttpMethod getMethod() {
         return method;
     }
 
     public String getPath() {
         return path;
+    }
+
+    public HashMap<String, String> getQuery() {
+        return query;
     }
 }
