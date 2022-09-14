@@ -12,6 +12,10 @@ public class HttpResponse {
         this.header = String.format("HTTP/1.1 %d OK\r\nContent-Type: text/html;charset=utf-8\r\nContent-Length: %d\r\n\r\n", statusCode, body.length).getBytes();
     }
 
+    public int getStatusCode() {
+        return statusCode;
+    }
+
     public byte[] getHeader() {
         return header;
     }
