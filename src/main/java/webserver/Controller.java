@@ -6,14 +6,21 @@ import java.nio.file.Files;
 
 public class Controller {
 
-    public HttpResponse requestMapping(HttpRequest httpRequest) throws IOException {
+    Service service = new Service();
+
+    public HttpResponse requestMapping(HttpRequest httpRequest) throws Exception {
         if (httpRequest.getMethod() == HttpMethod.GET) {
-            if (httpRequest.getPath().equals("/index.html")) {
+            if (httpRequest.getPath().equals("/user/create")) {
+                service.createUser(httpRequest.getQuery());
                 return new HttpResponse(
-                        getFile("/index.html"),
+                        getFile("index.html"),
                         200
                 );
             }
+            return new HttpResponse(
+                    getFile(httpRequest.getPath()),
+                    200
+            );
         }
         return new HttpResponse(
                 getFile("/404.html"),
