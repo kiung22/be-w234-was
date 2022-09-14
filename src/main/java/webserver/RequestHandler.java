@@ -22,12 +22,11 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             HttpRequest httpRequest = new HttpRequest(in);
             DataOutputStream dos = new DataOutputStream(out);
             HttpResponse httpResponse = controller.requestMapping(httpRequest);
             writeResponse(dos, httpResponse);
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage());
         }
     }
