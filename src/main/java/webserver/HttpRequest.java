@@ -12,8 +12,8 @@ public class HttpRequest {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
 
-    HttpMethod method;
-    String path;
+    private HttpMethod method;
+    private String path;
 
     public HttpRequest(InputStream inputStream) {
         try {
@@ -32,5 +32,13 @@ public class HttpRequest {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    public HttpMethod getMethod() {
+        return method;
+    }
+
+    public String getPath() {
+        return path;
     }
 }

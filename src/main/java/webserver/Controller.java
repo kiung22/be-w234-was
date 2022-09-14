@@ -7,8 +7,8 @@ import java.nio.file.Files;
 public class Controller {
 
     public HttpResponse requestMapping(HttpRequest httpRequest) throws IOException {
-        if (httpRequest.method == HttpMethod.GET) {
-            if (httpRequest.path.equals("/index.html")) {
+        if (httpRequest.getMethod() == HttpMethod.GET) {
+            if (httpRequest.getPath().equals("/index.html")) {
                 return new HttpResponse(
                         getFile("/index.html"),
                         200
