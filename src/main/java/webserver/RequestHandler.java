@@ -3,8 +3,12 @@ package webserver;
 import java.io.*;
 import java.net.Socket;
 
+import http.HttpResponse;
+import http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static util.HttpResponseUtils.*;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -33,8 +37,9 @@ public class RequestHandler implements Runnable {
 
     private void writeResponse(DataOutputStream dos, HttpResponse httpResponse) {
         try {
-            dos.write(httpResponse.getHeader());
-            dos.write(httpResponse.getBody());
+            dos.write(statusLineToByte(httpResponse.getVersion(), httpResponse.getStatus()));
+            dos.write(headerToByte(httpResponse.getHeader()));
+            dos.write(fileToByte(httpResponse.getBody()));
             dos.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());

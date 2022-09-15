@@ -1,8 +1,10 @@
 package webserver;
 
+import http.HttpMethod;
+import http.HttpResponse;
+import http.HttpRequest;
+
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 
 public class Controller {
 
@@ -16,19 +18,32 @@ public class Controller {
                         getFile("index.html"),
                         200
                 );
+            } else if (httpRequest.getPath().endsWith(".css")) {
+                return new HttpResponse(
+                        getFile(httpRequest.getPath()),
+                        200
+                ).addHeader("Content-Type", "text/css");
+            }
+
+            if (haveFile(httpRequest.getPath())) {
+                return new HttpResponse(
+                        getFile(httpRequest.getPath()),
+                        200
+                );
             }
             return new HttpResponse(
-                    getFile(httpRequest.getPath()),
-                    200
+                    getFile("/404.html"),
+                    404
             );
         }
-        return new HttpResponse(
-                getFile("/404.html"),
-                404
-        );
+        return null;
+    };
+
+    private File getFile(String path) {
+        return new File("./webapp" + path);
     }
 
-    private byte[] getFile(String path) throws IOException {
-        return Files.readAllBytes(new File("./webapp" + path).toPath());
+    private boolean haveFile(String path) {
+        return new File("./webapp" + path).exists();
     }
 }
