@@ -1,11 +1,12 @@
 package webserver;
 
+import http.HttpResponse;
+import http.HttpRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 
@@ -22,7 +23,7 @@ class ControllerTest {
         HttpRequest httpRequest = new HttpRequest(inputStream);
         HttpResponse httpResponse = controller.requestMapping(httpRequest);
 
-        assertThat(httpResponse.getStatusCode()).isEqualTo(200);
+        assertThat(httpResponse.getStatus().getStatusCode()).isEqualTo(200);
         assertThat(httpResponse.getBody()).isEqualTo(Files.readAllBytes(new File("./webapp/index.html").toPath()));
     }
 
@@ -33,7 +34,7 @@ class ControllerTest {
         HttpRequest httpRequest = new HttpRequest(inputStream);
         HttpResponse httpResponse = controller.requestMapping(httpRequest);
 
-        assertThat(httpResponse.getStatusCode()).isEqualTo(404);
+        assertThat(httpResponse.getStatus().getStatusCode()).isEqualTo(404);
         assertThat(httpResponse.getBody()).isEqualTo(Files.readAllBytes(new File("./webapp/404.html").toPath()));
     }
 }
