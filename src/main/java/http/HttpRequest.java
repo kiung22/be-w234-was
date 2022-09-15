@@ -1,12 +1,12 @@
-package webserver;
+package http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+
+import static util.HttpRequestUtils.parseQueryString;
 
 public class HttpRequest {
 
@@ -24,7 +24,10 @@ public class HttpRequest {
             method = HttpMethod.valueOf(tokens[0]);
             String[] queryTokens = tokens[1].split("\\?");
             path = queryTokens[0];
-            query = parseQuery(queryTokens);
+            query = new HashMap<>();
+            if (queryTokens.length > 1) {
+                query = (HashMap<String, String>) parseQueryString(queryTokens[1]);
+            }
             logger.info("Http Method: {}", method);
             logger.info("Http Path: {}", path);
             logger.info("Http Query: {}", query);
@@ -36,22 +39,6 @@ public class HttpRequest {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
-    }
-
-    private HashMap<String, String> parseQuery(String[] queryTokens) throws UnsupportedEncodingException {
-        HashMap<String, String> queryMap = new HashMap<>();
-        if (queryTokens.length < 2) {
-            return queryMap;
-        }
-        String[] pairs = queryTokens[1].split("&");
-        for (String pair : pairs) {
-            int idx = pair.indexOf("=");
-            queryMap.put(
-                    URLDecoder.decode(pair.substring(0, idx), StandardCharsets.UTF_8),
-                    URLDecoder.decode(pair.substring(idx + 1), StandardCharsets.UTF_8)
-            );
-        }
-        return queryMap;
     }
 
     public HttpMethod getMethod() {
