@@ -1,26 +1,35 @@
-package webserver;
+package http;
+
+import java.io.File;
+import java.util.HashMap;
 
 public class HttpResponse {
 
-    private int statusCode;
-    private byte[] header;
-    private byte[] body;
+    private HttpStatus status;
+    private HashMap<String, String> header = new HashMap<>();
+    private File body;
+    private String version = "1.1";
 
-    public HttpResponse(byte[] body, int statusCode) {
-        this.statusCode = statusCode;
+    public HttpResponse(File body, int statusCode) {
+        this.status = HttpStatus.valueOfStatusCode(statusCode);
         this.body = body;
-        this.header = String.format("HTTP/1.1 %d OK\r\nContent-Type: text/html;charset=utf-8\r\nContent-Length: %d\r\n\r\n", statusCode, body.length).getBytes();
+        this.header.put("Content-Type", "text/html;charset-utf-8");
+        this.header.put("Content-Length", String.valueOf(body.length()));
     }
 
-    public int getStatusCode() {
-        return statusCode;
-    }
+    public HttpStatus getStatus() { return status; }
+    public String getVersion() { return version; }
 
-    public byte[] getHeader() {
+    public HashMap<String, String> getHeader() {
         return header;
     }
 
-    public byte[] getBody() {
+    public File getBody() {
         return body;
+    }
+
+    public HttpResponse addHeader(String key, String value) {
+        this.header.put(key, value);
+        return this;
     }
 }
