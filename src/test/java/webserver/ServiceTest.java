@@ -16,7 +16,7 @@ class ServiceTest {
 
     @Test
     @DisplayName("올바른 유저정보를 받아서 유저 생성에 성공합니다.")
-    void CreateUser() throws Exception {
+    void CreateUser() {
         HashMap<String, String> userInfo = new HashMap<>();
         userInfo.put("userId", "test");
         userInfo.put("password", "test");
@@ -38,9 +38,7 @@ class ServiceTest {
         userInfo.put("userId", "test");
         userInfo.put("password", "test");
 
-        Exception exception = assertThrows(Exception.class, () -> {
-            service.createUser(userInfo);
-        });
-        assertThat(exception.getMessage()).isEqualTo("유저 정보가 잘 못 되었습니다.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> service.createUser(userInfo));
+        assertThat(exception.getMessage()).isEqualTo("유저 정보가 잘못 되었습니다.");
     }
 }

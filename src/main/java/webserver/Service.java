@@ -12,8 +12,10 @@ public class Service {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
 
-    public void createUser(Map<String, String> userInfo) throws Exception {
-        if (validateUserInfo(userInfo)) throw new Exception("유저 정보가 잘 못 되었습니다.");
+    public void createUser(Map<String, String> userInfo) {
+        if (validateUserInfo(userInfo)) {
+            throw new IllegalArgumentException("유저 정보가 잘못 되었습니다.");
+        }
         User user = new User(
                 userInfo.get("userId"),
                 userInfo.get("password"),
