@@ -1,5 +1,6 @@
 package http;
 
+import java.util.Collections;
 import java.util.Map;
 
 public class HttpRequest {
@@ -27,6 +28,6 @@ public class HttpRequest {
     }
 
     public Map<String, String> getQuery() {
-        return query;
+        return Collections.unmodifiableMap(query);
     }
 }
