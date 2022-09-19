@@ -1,21 +1,25 @@
 package http;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class HttpResponse {
 
-    private HttpStatus status;
-    private Map<String, String> header = new HashMap<>();
-    private File body;
-    private String version = "1.1";
+    private final HttpStatus status;
+    private final Map<String, String> header = new HashMap<>();
+    private final File body;
+    private static final String version = "1.1";
 
     public HttpResponse(File body, int statusCode) {
-        this.status = HttpStatus.valueOfStatusCode(statusCode);
+        status = HttpStatus.valueOfStatusCode(statusCode);
         this.body = body;
-        this.header.put("Content-Type", "text/html;charset-utf-8");
-        this.header.put("Content-Length", String.valueOf(body.length()));
+        header.put("Content-Type", "text/html;charset-utf-8");
+        header.put("Content-Length", String.valueOf(body.length()));
     }
 
     public HttpStatus getStatus() {
@@ -26,7 +30,7 @@ public class HttpResponse {
     }
 
     public Map<String, String> getHeader() {
-        return header;
+        return Collections.unmodifiableMap(header);
     }
 
     public File getBody() {
@@ -34,7 +38,21 @@ public class HttpResponse {
     }
 
     public HttpResponse addHeader(String key, String value) {
-        this.header.put(key, value);
+        header.put(key, value);
         return this;
+    }
+
+    public byte[] getBodyToBytes() throws IOException {
+        return Files.readAllBytes(body.toPath());
+    }
+
+    public byte[] getHeaderToBytes() {
+        String stringHeader = header.entrySet().stream().map(e -> e.getKey() + ": " + e.getValue())
+                .collect(Collectors.joining("\r\n")) + "\r\n\r\n";
+        return stringHeader.getBytes();
+    }
+
+    public byte[] getStatusLineToBytes() {
+        return String.format("HTTP/%s %d %s\r\n", version, status.getStatusCode(), status.getStatusMessage()).getBytes();
     }
 }
