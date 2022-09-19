@@ -24,7 +24,7 @@ class ControllerTest {
         HttpResponse httpResponse = controller.requestMapping(httpRequest);
 
         assertThat(httpResponse.getStatus().getStatusCode()).isEqualTo(200);
-        assertThat(httpResponse.getBody()).isEqualTo(Files.readAllBytes(new File("./webapp/index.html").toPath()));
+        assertThat(httpResponse.getBody()).isEqualTo(new File("./webapp/index.html"));
     }
 
     @Test
@@ -35,6 +35,6 @@ class ControllerTest {
         HttpResponse httpResponse = controller.requestMapping(httpRequest);
 
         assertThat(httpResponse.getStatus().getStatusCode()).isEqualTo(404);
-        assertThat(httpResponse.getBody()).isEqualTo(Files.readAllBytes(new File("./webapp/404.html").toPath()));
+        assertThat(httpResponse.getBody()).isEqualTo(new File("./webapp/404.html"));
     }
 }
