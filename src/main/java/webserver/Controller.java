@@ -10,9 +10,9 @@ public class Controller {
 
     Service service = new Service();
 
-    public HttpResponse requestMapping(HttpRequest httpRequest) throws Exception {
+    public HttpResponse requestMapping(HttpRequest httpRequest) {
         if (httpRequest.getMethod() == HttpMethod.GET) {
-            if (httpRequest.getPath().equals("/user/create")) {
+            if ("/user/create".equals(httpRequest.getPath())) {
                 service.createUser(httpRequest.getQuery());
                 return new HttpResponse(
                         getFile("index.html"),
@@ -25,7 +25,7 @@ public class Controller {
                 ).addHeader("Content-Type", "text/css");
             }
 
-            if (haveFile(httpRequest.getPath())) {
+            if (existFile(httpRequest.getPath())) {
                 return new HttpResponse(
                         getFile(httpRequest.getPath()),
                         200
@@ -43,7 +43,7 @@ public class Controller {
         return new File("./webapp" + path);
     }
 
-    private boolean haveFile(String path) {
+    private boolean existFile(String path) {
         return new File("./webapp" + path).exists();
     }
 }
