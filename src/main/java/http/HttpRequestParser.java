@@ -1,13 +1,32 @@
-package util;
+package http;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
-public class HttpRequestUtils {
+public final class HttpRequestParser {
+
+    private HttpRequestParser() {}
+
+    public static Map<String, String> parseStatusLine(String statusLine) {
+        HashMap<String, String> statusLineMap = new HashMap<>();
+        String[] methodTokens = statusLine.split(" ");
+        statusLineMap.put("method", methodTokens[0]);
+        String[] queryTokens = methodTokens[1].split("\\?");
+        statusLineMap.put("path", queryTokens[0]);
+        if (queryTokens.length > 1) {
+            statusLineMap.put("queryString", queryTokens[1]);
+        } else {
+            statusLineMap.put("queryString", "");
+        }
+        return statusLineMap;
+    }
 
     public static Map<String, String> parseQueryString(String queryString) {
         return parseValues(queryString, "&");
@@ -24,7 +43,7 @@ public class HttpRequestUtils {
 
         String[] tokens = values.split(separator);
         return Arrays.stream(tokens).map(t -> getKeyValue(t, "=")).filter(p -> p != null)
-                .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
+                .collect(Collectors.toMap(p -> p.getKey(), p -> URLDecoder.decode(p.getValue(), StandardCharsets.UTF_8)));
     }
 
     static Pair getKeyValue(String keyValue, String regex) {
@@ -32,7 +51,7 @@ public class HttpRequestUtils {
             return null;
         }
 
-        String[] tokens = keyValue.split(regex);
+        String[] tokens = keyValue.split(regex, 2);
         if (tokens.length != 2) {
             return null;
         }
@@ -41,10 +60,10 @@ public class HttpRequestUtils {
     }
 
     public static Pair parseHeader(String header) {
-        return getKeyValue(header, ": ");
+        return getKeyValue(header, ":");
     }
 
-    public static class Pair {
+    private static class Pair {
         String key;
         String value;
 
