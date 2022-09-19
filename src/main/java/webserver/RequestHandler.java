@@ -1,6 +1,9 @@
 package webserver;
 
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 
 import http.HttpResponse;
@@ -8,7 +11,8 @@ import http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static util.HttpResponseUtils.*;
+import util.HttpResponseUtils;
+
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -37,9 +41,9 @@ public class RequestHandler implements Runnable {
 
     private void writeResponse(DataOutputStream dos, HttpResponse httpResponse) {
         try {
-            dos.write(statusLineToByte(httpResponse.getVersion(), httpResponse.getStatus()));
-            dos.write(headerToByte(httpResponse.getHeader()));
-            dos.write(fileToByte(httpResponse.getBody()));
+            dos.write(HttpResponseUtils.statusLineToByte(httpResponse.getVersion(), httpResponse.getStatus()));
+            dos.write(HttpResponseUtils.headerToByte(httpResponse.getHeader()));
+            dos.write(HttpResponseUtils.fileToByte(httpResponse.getBody()));
             dos.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());

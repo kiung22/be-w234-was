@@ -3,10 +3,14 @@ package http;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.Map;
 
-import static util.HttpRequestUtils.parseQueryString;
+import util.HttpRequestUtils;
 
 public class HttpRequest {
 
@@ -14,7 +18,7 @@ public class HttpRequest {
 
     private HttpMethod method;
     private String path;
-    private HashMap<String, String> query;
+    private Map<String, String> query;
 
     public HttpRequest(InputStream inputStream) {
         try {
@@ -26,7 +30,7 @@ public class HttpRequest {
             path = queryTokens[0];
             query = new HashMap<>();
             if (queryTokens.length > 1) {
-                query = (HashMap<String, String>) parseQueryString(queryTokens[1]);
+                query = HttpRequestUtils.parseQueryString(queryTokens[1]);
             }
             logger.info("Http Method: {}", method);
             logger.info("Http Path: {}", path);
@@ -49,7 +53,7 @@ public class HttpRequest {
         return path;
     }
 
-    public HashMap<String, String> getQuery() {
+    public Map<String, String> getQuery() {
         return query;
     }
 }

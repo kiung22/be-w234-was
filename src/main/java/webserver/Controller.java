@@ -37,7 +37,7 @@ public class Controller {
             );
         }
         return null;
-    };
+    }
 
     private File getFile(String path) {
         return new File("./webapp" + path);

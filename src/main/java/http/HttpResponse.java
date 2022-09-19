@@ -2,11 +2,12 @@ package http;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 
 public class HttpResponse {
 
     private HttpStatus status;
-    private HashMap<String, String> header = new HashMap<>();
+    private Map<String, String> header = new HashMap<>();
     private File body;
     private String version = "1.1";
 
@@ -17,10 +18,14 @@ public class HttpResponse {
         this.header.put("Content-Length", String.valueOf(body.length()));
     }
 
-    public HttpStatus getStatus() { return status; }
-    public String getVersion() { return version; }
+    public HttpStatus getStatus() {
+        return status;
+    }
+    public String getVersion() {
+        return version;
+    }
 
-    public HashMap<String, String> getHeader() {
+    public Map<String, String> getHeader() {
         return header;
     }
 

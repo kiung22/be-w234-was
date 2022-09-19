@@ -5,20 +5,20 @@ import http.HttpStatus;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class HttpResponseUtils {
 
     public static byte[] fileToByte(File file) throws IOException {
         return Files.readAllBytes(file.toPath());
-    };
+    }
 
-    public static byte[] headerToByte(HashMap<String, String> header) {
+    public static byte[] headerToByte(Map<String, String> header) {
         return headerToString(header).getBytes();
     }
 
-    public static String headerToString(HashMap<String, String> header) {
+    public static String headerToString(Map<String, String> header) {
         return header.entrySet().stream().map(e -> e.getKey() + ": " + e.getValue())
                 .collect(Collectors.joining("\r\n")) + "\r\n\r\n";
     }
