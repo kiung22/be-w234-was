@@ -21,7 +21,7 @@ public enum HttpStatus {
     }
 
     public static HttpStatus valueOfStatusCode(int statusCode) {
-        for (HttpStatus status : HttpStatus.values()) {
+        for (HttpStatus status : values()) {
             if (status.getStatusCode() == statusCode) {
                 return status;
             }
