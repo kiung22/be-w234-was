@@ -7,6 +7,7 @@ import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.Map;
 
 public class SignupService implements Service {
@@ -15,8 +16,9 @@ public class SignupService implements Service {
 
     @Override
     public HttpResponse run(HttpRequest httpRequest) {
-        createUser(httpRequest.getQuery());
-        return null;
+        createUser(httpRequest.getBody());
+        return new HttpResponse(302)
+                .addHeader("Location", "/index.html");
     }
 
     public void createUser(Map<String, String> userInfo) {
