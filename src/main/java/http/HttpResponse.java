@@ -12,14 +12,11 @@ public class HttpResponse {
 
     private final HttpStatus status;
     private final Map<String, String> header = new HashMap<>();
-    private final File body;
+    private File body;
     private static final String version = "1.1";
 
-    public HttpResponse(File body, int statusCode) {
+    public HttpResponse(int statusCode) {
         status = HttpStatus.valueOfStatusCode(statusCode);
-        this.body = body;
-        header.put("Content-Type", "text/html;charset-utf-8");
-        header.put("Content-Length", String.valueOf(body.length()));
     }
 
     public HttpStatus getStatus() {
@@ -42,7 +39,17 @@ public class HttpResponse {
         return this;
     }
 
+    public HttpResponse setBody(File body) {
+        this.body = body;
+        header.put("Content-Type", "text/html;charset-utf-8");
+        header.put("Content-Length", String.valueOf(body.length()));
+        return this;
+    }
+
     public byte[] getBodyToBytes() throws IOException {
+        if (body == null) {
+            return null;
+        }
         return Files.readAllBytes(body.toPath());
     }
 
