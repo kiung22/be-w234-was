@@ -3,47 +3,27 @@ package webserver;
 import http.HttpMethod;
 import http.HttpResponse;
 import http.HttpRequest;
+import service.SignupService;
+import service.StaticFileService;
 
-import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Controller {
 
-    Service service = new Service();
+    private final Map<String, SignupService> postMapper = new HashMap<>();
+    private final StaticFileService staticFileService = new StaticFileService();
+
+    public Controller() {
+        postMapper.put("/user/create", new SignupService());
+    }
 
     public HttpResponse requestMapping(HttpRequest httpRequest) {
         if (httpRequest.getMethod() == HttpMethod.GET) {
-            if ("/user/create".equals(httpRequest.getPath())) {
-                service.createUser(httpRequest.getQuery());
-                return new HttpResponse(
-                        getFile("index.html"),
-                        200
-                );
-            } else if (httpRequest.getPath().endsWith(".css")) {
-                return new HttpResponse(
-                        getFile(httpRequest.getPath()),
-                        200
-                ).addHeader("Content-Type", "text/css");
-            }
-
-            if (existFile(httpRequest.getPath())) {
-                return new HttpResponse(
-                        getFile(httpRequest.getPath()),
-                        200
-                );
-            }
-            return new HttpResponse(
-                    getFile("/404.html"),
-                    404
-            );
+            return staticFileService.run(httpRequest);
+        } else if (httpRequest.getMethod() == HttpMethod.POST) {
+            return postMapper.get(httpRequest.getPath()).run(httpRequest);
         }
         return null;
-    }
-
-    private File getFile(String path) {
-        return new File("./webapp" + path);
-    }
-
-    private boolean existFile(String path) {
-        return new File("./webapp" + path).exists();
     }
 }

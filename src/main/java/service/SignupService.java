@@ -1,16 +1,23 @@
-package webserver;
+package service;
 
 import db.Database;
 import http.HttpRequest;
+import http.HttpResponse;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-public class Service {
+public class SignupService implements Service {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
+
+    @Override
+    public HttpResponse run(HttpRequest httpRequest) {
+        createUser(httpRequest.getQuery());
+        return null;
+    }
 
     public void createUser(Map<String, String> userInfo) {
         if (validateUserInfo(userInfo)) {

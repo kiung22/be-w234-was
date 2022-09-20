@@ -4,15 +4,16 @@ import db.Database;
 import model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import service.SignupService;
 
 import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class ServiceTest {
+class SignupServiceTest {
 
-    Service service = new Service();
+    SignupService signupService = new SignupService();
 
     @Test
     @DisplayName("올바른 유저정보를 받아서 유저 생성에 성공합니다.")
@@ -23,7 +24,7 @@ class ServiceTest {
         userInfo.put("name", "test");
         userInfo.put("email", "test");
 
-        service.createUser(userInfo);
+        signupService.createUser(userInfo);
         User user = Database.findUserById("test");
         assertThat(user.getUserId()).isEqualTo("test");
         assertThat(user.getPassword()).isEqualTo("test");
@@ -38,7 +39,7 @@ class ServiceTest {
         userInfo.put("userId", "test");
         userInfo.put("password", "test");
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> service.createUser(userInfo));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> signupService.createUser(userInfo));
         assertThat(exception.getMessage()).isEqualTo("유저 정보가 잘못 되었습니다.");
     }
 }
