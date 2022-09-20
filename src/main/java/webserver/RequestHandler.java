@@ -2,6 +2,7 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.Map;
 
 import http.HttpMethod;
@@ -45,25 +46,44 @@ public class RequestHandler implements Runnable {
         String path = statusLineMap.get("path");
         String queryString = statusLineMap.get("queryString");
         Map<String, String> query = HttpRequestParser.parseQueryString(queryString);
-
         logger.info("Http Method: {}", method);
         logger.info("Http Path: {}", path);
         logger.info("Http Query: {}", query);
+
+        Map<String, String> header = new HashMap<>();
+        line = br.readLine();
         while (line != null && !line.isEmpty()) {
-            logger.debug(line);
+            HttpRequestParser.Pair pair = HttpRequestParser.parseHeader(line);
+            header.put(pair.getKey(), pair.getValue());
             line = br.readLine();
+        }
+        logger.info("Http Header: {}", header);
+        Map<String, String> body;
+        if (header.containsKey("Content-Length")) {
+            int contentLength = Integer.parseInt(header.get("Content-Length"));
+            char[] bodyChar = new char[contentLength];
+            br.read(bodyChar, 0, contentLength);
+            String bodySting = String.copyValueOf(bodyChar);
+            body = HttpRequestParser.parseBodyString(bodySting);
+            logger.info("Http Body: {}", body);
+        } else {
+            body = new HashMap<>();
         }
         return new HttpRequest(
                 method,
                 path,
-                query
+                query,
+                header,
+                body
         );
     }
 
     private void writeResponse(DataOutputStream dos, HttpResponse httpResponse) throws IOException {
         dos.write(httpResponse.getStatusLineToBytes());
         dos.write(httpResponse.getHeaderToBytes());
-        dos.write(httpResponse.getBodyToBytes());
+        if (httpResponse.getBody() != null) {
+            dos.write(httpResponse.getBodyToBytes());
+        }
         dos.flush();
     }
 }
