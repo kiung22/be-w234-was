@@ -31,6 +31,9 @@ public final class HttpRequestParser {
     public static Map<String, String> parseQueryString(String queryString) {
         return parseValues(queryString, "&");
     }
+    public static Map<String, String> parseBodyString(String bodyString) {
+        return parseValues(bodyString, "&");
+    }
 
     public static Map<String, String> parseCookies(String cookies) {
         return parseValues(cookies, ";");
@@ -63,7 +66,7 @@ public final class HttpRequestParser {
         return getKeyValue(header, ":");
     }
 
-    private static class Pair {
+    public static class Pair {
         String key;
         String value;
 
