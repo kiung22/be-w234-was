@@ -6,9 +6,7 @@ import http.HttpRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,6 +21,8 @@ class ControllerTest {
         HttpRequest httpRequest = new HttpRequest(
                 HttpMethod.GET,
                 "/index.html",
+                new HashMap<>(),
+                new HashMap<>(),
                 new HashMap<>()
         );
         HttpResponse httpResponse = controller.requestMapping(httpRequest);
@@ -37,7 +37,10 @@ class ControllerTest {
         HttpRequest httpRequest = new HttpRequest(
                 HttpMethod.GET,
                 "/bad-request",
-                new HashMap<>());
+                new HashMap<>(),
+                new HashMap<>(),
+                new HashMap<>()
+        );
         HttpResponse httpResponse = controller.requestMapping(httpRequest);
 
         assertThat(httpResponse.getStatus().getStatusCode()).isEqualTo(404);
