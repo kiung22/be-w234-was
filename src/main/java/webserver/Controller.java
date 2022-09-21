@@ -3,6 +3,8 @@ package webserver;
 import http.HttpMethod;
 import http.HttpResponse;
 import http.HttpRequest;
+import service.LoginService;
+import service.Service;
 import service.SignupService;
 import service.StaticFileService;
 
@@ -11,11 +13,12 @@ import java.util.Map;
 
 public class Controller {
 
-    private final Map<String, SignupService> postMapper = new HashMap<>();
+    private final Map<String, Service> postMapper = new HashMap<>();
     private final StaticFileService staticFileService = new StaticFileService();
 
     public Controller() {
         postMapper.put("/user/create", new SignupService());
+        postMapper.put("/user/login", new LoginService());
     }
 
     public HttpResponse requestMapping(HttpRequest httpRequest) {
