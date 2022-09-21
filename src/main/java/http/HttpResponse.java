@@ -12,6 +12,7 @@ public class HttpResponse {
 
     private final HttpStatus status;
     private final Map<String, String> header = new HashMap<>();
+    private final Map<String, Cookie> cookie = new HashMap<>();
     private File body;
     private static final String version = "1.1";
 
@@ -30,12 +31,21 @@ public class HttpResponse {
         return Collections.unmodifiableMap(header);
     }
 
+    public Map<String, Cookie> getCookie() {
+        return Collections.unmodifiableMap(cookie);
+    }
+
     public File getBody() {
         return body;
     }
 
-    public HttpResponse addHeader(String key, String value) {
+    public HttpResponse setHeader(String key, String value) {
         header.put(key, value);
+        return this;
+    }
+
+    public HttpResponse setCookie(Cookie value) {
+        cookie.put(value.getName(), value);
         return this;
     }
 
@@ -54,9 +64,11 @@ public class HttpResponse {
     }
 
     public byte[] getHeaderToBytes() {
-        String stringHeader = header.entrySet().stream().map(e -> e.getKey() + ": " + e.getValue())
-                .collect(Collectors.joining("\r\n")) + "\r\n\r\n";
-        return stringHeader.getBytes();
+        String headerString = header.entrySet().stream().map(e -> e.getKey() + ": " + e.getValue())
+                .collect(Collectors.joining("\r\n"));
+        String cookieString = "\r\n" + cookie.values().stream().map(e -> "Set-Cookie: " + e.toString())
+                .collect(Collectors.joining("\r\n"));
+        return (headerString + cookieString + "\r\n\r\n").getBytes();
     }
 
     public byte[] getStatusLineToBytes() {
