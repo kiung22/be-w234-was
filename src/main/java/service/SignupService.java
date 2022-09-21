@@ -20,7 +20,7 @@ public class SignupService implements Service {
                 .setHeader("Location", "/index.html");
     }
 
-    public void createUser(Map<String, String> userInfo) {
+    private void createUser(Map<String, String> userInfo) {
         if (validateUserInfo(userInfo)) {
             throw new IllegalArgumentException("유저 정보가 잘못 되었습니다.");
         }
