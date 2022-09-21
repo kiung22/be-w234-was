@@ -41,4 +41,17 @@ class HttpRequestParserTest {
         assertThat(query.get("name")).isEqualTo("test");
         assertThat(query.get("email")).isEqualTo("test@slipp.net");
     }
+
+    @Test
+    @DisplayName("body parsing 테스트")
+    void parseBody() {
+        Map<String, String> body = HttpRequestParser.parseQueryString(
+                "userId=test&password=password&name=test&email=test%40slipp.net"
+        );
+
+        assertThat(body.get("userId")).isEqualTo("test");
+        assertThat(body.get("password")).isEqualTo("password");
+        assertThat(body.get("name")).isEqualTo("test");
+        assertThat(body.get("email")).isEqualTo("test@slipp.net");
+    }
 }
