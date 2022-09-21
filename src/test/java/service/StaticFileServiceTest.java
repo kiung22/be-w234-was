@@ -1,0 +1,69 @@
+package service;
+
+import db.Database;
+import http.HttpMethod;
+import http.HttpRequest;
+import http.HttpResponse;
+import model.User;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class StaticFileServiceTest {
+
+    StaticFileService staticFileService = new StaticFileService();
+
+    @Test
+    @DisplayName("static file이 존재하면 해당 파일을 응답합니다.")
+    void responseStaticFile() {
+        HttpRequest httpRequest = new HttpRequest(
+                HttpMethod.GET,
+                "/index.html",
+                new HashMap<>(),
+                new HashMap<>(),
+                new HashMap<>()
+        );
+
+        HttpResponse response = staticFileService.run(httpRequest);
+        assertThat(response.getStatus().getStatusCode()).isEqualTo(200);
+        assertThat(response.getHeader().get("Content-Type")).isEqualTo("text/html;charset-utf-8");
+        assertThat(response.getBody().getPath()).isEqualTo("./webapp/index.html");
+    }
+
+    @Test
+    @DisplayName("static file을 찾을 수 없으면 404.html을 응답합니다.")
+    void notFound() {
+        HttpRequest httpRequest = new HttpRequest(
+                HttpMethod.GET,
+                "/not-found.html",
+                new HashMap<>(),
+                new HashMap<>(),
+                new HashMap<>()
+        );
+
+        HttpResponse response = staticFileService.run(httpRequest);
+        assertThat(response.getStatus().getStatusCode()).isEqualTo(404);
+        assertThat(response.getHeader().get("Content-Type")).isEqualTo("text/html;charset-utf-8");
+        assertThat(response.getBody().getPath()).isEqualTo("./webapp/404.html");
+    }
+
+    @Test
+    @DisplayName("css 파일인 경우에는 Content-Type이 text/css로 응답합니다.")
+    void contentTypeCss() {
+        HttpRequest httpRequest = new HttpRequest(
+                HttpMethod.GET,
+                "/css/styles.css",
+                new HashMap<>(),
+                new HashMap<>(),
+                new HashMap<>()
+        );
+
+        HttpResponse response = staticFileService.run(httpRequest);
+        assertThat(response.getStatus().getStatusCode()).isEqualTo(200);
+        assertThat(response.getHeader().get("Content-Type")).isEqualTo("text/css");
+        assertThat(response.getBody().getPath()).isEqualTo("./webapp/css/styles.css");
+    }
+}
