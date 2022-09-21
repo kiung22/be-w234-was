@@ -16,7 +16,7 @@ public class StaticFileService implements Service {
         if (httpRequest.getPath().endsWith(".css")) {
             return new HttpResponse(200)
                     .setBody(getFile(httpRequest.getPath()))
-                    .addHeader("Content-Type", "text/css");
+                    .setHeader("Content-Type", "text/css");
         }
         return new HttpResponse(200)
                 .setBody(getFile(httpRequest.getPath()));
