@@ -20,6 +20,14 @@ public class Cookie {
         return name;
     }
 
+    public String getValue() {
+        return value;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
     @Override
     public String toString() {
         String cookieString = name + "=" + value;
