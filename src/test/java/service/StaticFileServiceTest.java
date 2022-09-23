@@ -1,10 +1,8 @@
 package service;
 
-import db.Database;
 import http.HttpMethod;
 import http.HttpRequest;
 import http.HttpResponse;
-import model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
