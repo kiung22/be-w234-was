@@ -81,7 +81,7 @@ public class RequestHandler implements Runnable {
     private void writeResponse(DataOutputStream dos, HttpResponse httpResponse) throws IOException {
         dos.write(httpResponse.getStatusLineToBytes());
         dos.write(httpResponse.getHeaderToBytes());
-        if (httpResponse.getBody() != null) {
+        if (httpResponse.getBodyToBytes() != null) {
             dos.write(httpResponse.getBodyToBytes());
         }
         dos.flush();
