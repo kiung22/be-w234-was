@@ -14,6 +14,7 @@ public class HttpResponse {
     private final Map<String, String> header = new HashMap<>();
     private final Map<String, Cookie> cookie = new HashMap<>();
     private File body;
+    private byte[] bodyBytes;
     private static final String version = "1.1";
 
     public HttpResponse(int statusCode) {
@@ -56,11 +57,21 @@ public class HttpResponse {
         return this;
     }
 
+    public HttpResponse setBody(byte[] body) {
+        this.bodyBytes = body;
+        header.put("Content-Type", "text/html;charset-utf-8");
+        header.put("Content-Length", String.valueOf(body.length));
+        return this;
+    }
+
     public byte[] getBodyToBytes() throws IOException {
-        if (body == null) {
-            return null;
+        if (bodyBytes != null) {
+            return bodyBytes;
         }
-        return Files.readAllBytes(body.toPath());
+        if (body != null) {
+            return Files.readAllBytes(body.toPath());
+        }
+        return null;
     }
 
     public byte[] getHeaderToBytes() {
