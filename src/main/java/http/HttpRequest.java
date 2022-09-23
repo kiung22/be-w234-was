@@ -1,7 +1,9 @@
 package http;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class HttpRequest {
 
@@ -10,6 +12,7 @@ public class HttpRequest {
     private final Map<String, String> query;
     private final Map<String, String> header;
     private final Map<String, String> body;
+    private final Map<String, Cookie> cookie;
 
     public HttpRequest(
             HttpMethod method,
@@ -23,6 +26,14 @@ public class HttpRequest {
         this.query = query;
         this.header = header;
         this.body = body;
+        if (this.header.containsKey("Cookie")) {
+            Map<String, String> cookieStringMap = HttpRequestParser.parseCookies(this.header.get("Cookie"));
+            cookie = cookieStringMap.entrySet().stream()
+                    .collect(Collectors.toMap(e -> e.getKey(), e -> new Cookie(e.getKey(), e.getValue())));
+            System.out.println(cookie);
+        } else {
+            cookie = new HashMap<>();
+        }
     }
 
     public HttpMethod getMethod() {
@@ -43,5 +54,9 @@ public class HttpRequest {
 
     public Map<String, String> getBody() {
         return Collections.unmodifiableMap(body);
+    }
+
+    public Map<String, Cookie> getCookie() {
+        return Collections.unmodifiableMap(cookie);
     }
 }
