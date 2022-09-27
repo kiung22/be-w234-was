@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,29 +18,27 @@ class LoginServiceTest {
 
     LoginService loginService = new LoginService();
 
+    private static final Map<String, String> header = new HashMap<>();
+
     @BeforeAll
-    static void initializeDatabase() {
+    static void setup() {
         Database.addUser(new User(
                 "test",
                 "test",
                 "test",
                 "test"
         ));
+
+        header.put("Content-Type", "application/x-www-form-urlencoded");
     }
 
     @Test
     @DisplayName("올바른 유저정보를 받아서 로그인에 성공합니다.")
     void login() {
-        HashMap<String, String> userInfo = new HashMap<>();
-        userInfo.put("userId", "test");
-        userInfo.put("password", "test");
-        HttpRequest httpRequest = new HttpRequest(
-                HttpMethod.POST,
-                "/user/login",
-                new HashMap<>(),
-                new HashMap<>(),
-                userInfo
-        );
+        HttpRequest httpRequest = new HttpRequest.Builder(HttpMethod.POST, "/user/login")
+                .setHeader(header)
+                .setBody("userId=test&password=test")
+                .build();
 
         HttpResponse response = loginService.run(httpRequest);
         assertThat(response.getStatus().getStatusCode()).isEqualTo(302);
@@ -51,16 +50,10 @@ class LoginServiceTest {
     @Test
     @DisplayName("잘못된 유저정보를 받아서 로그인에 실패합니다.")
     void loginFailed() {
-        HashMap<String, String> userInfo = new HashMap<>();
-        userInfo.put("userId", "incorrect");
-        userInfo.put("password", "incorrect");
-        HttpRequest httpRequest = new HttpRequest(
-                HttpMethod.POST,
-                "/user/login",
-                new HashMap<>(),
-                new HashMap<>(),
-                userInfo
-        );
+        HttpRequest httpRequest = new HttpRequest.Builder(HttpMethod.POST, "/user/login")
+                .setHeader(header)
+                .setBody("userId=incorrect&password=incorrect")
+                .build();
 
         HttpResponse response = loginService.run(httpRequest);
         assertThat(response.getStatus().getStatusCode()).isEqualTo(302);

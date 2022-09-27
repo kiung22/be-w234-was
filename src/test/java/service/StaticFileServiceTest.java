@@ -6,7 +6,11 @@ import http.HttpResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,54 +18,49 @@ class StaticFileServiceTest {
 
     StaticFileService staticFileService = new StaticFileService();
 
+    private byte[] getFile(String path) throws IOException {
+        return Files.readAllBytes(Path.of(path));
+    }
+
     @Test
     @DisplayName("static file이 존재하면 해당 파일을 응답합니다.")
-    void responseStaticFile() {
-        HttpRequest httpRequest = new HttpRequest(
+    void responseStaticFile() throws IOException {
+        HttpRequest httpRequest = new HttpRequest.Builder(
                 HttpMethod.GET,
-                "/index.html",
-                new HashMap<>(),
-                new HashMap<>(),
-                new HashMap<>()
-        );
+                "/index.html"
+        ).build();
 
         HttpResponse response = staticFileService.run(httpRequest);
         assertThat(response.getStatus().getStatusCode()).isEqualTo(200);
         assertThat(response.getHeader().get("Content-Type")).isEqualTo("text/html;charset-utf-8");
-        assertThat(response.getBody().getPath()).isEqualTo("./webapp/index.html");
+        assertThat(response.getBody()).isEqualTo(getFile("./webapp/index.html"));
     }
 
     @Test
     @DisplayName("static file을 찾을 수 없으면 404.html을 응답합니다.")
-    void notFound() {
-        HttpRequest httpRequest = new HttpRequest(
+    void notFound() throws IOException {
+        HttpRequest httpRequest = new HttpRequest.Builder(
                 HttpMethod.GET,
-                "/not-found.html",
-                new HashMap<>(),
-                new HashMap<>(),
-                new HashMap<>()
-        );
+                "/not-found.html"
+        ).build();
 
         HttpResponse response = staticFileService.run(httpRequest);
         assertThat(response.getStatus().getStatusCode()).isEqualTo(404);
         assertThat(response.getHeader().get("Content-Type")).isEqualTo("text/html;charset-utf-8");
-        assertThat(response.getBody().getPath()).isEqualTo("./webapp/404.html");
+        assertThat(response.getBody()).isEqualTo(getFile("./webapp/404.html"));
     }
 
     @Test
     @DisplayName("css 파일인 경우에는 Content-Type이 text/css로 응답합니다.")
-    void contentTypeCss() {
-        HttpRequest httpRequest = new HttpRequest(
+    void contentTypeCss() throws IOException {
+        HttpRequest httpRequest = new HttpRequest.Builder(
                 HttpMethod.GET,
-                "/css/styles.css",
-                new HashMap<>(),
-                new HashMap<>(),
-                new HashMap<>()
-        );
+                "/css/styles.css"
+        ).build();
 
         HttpResponse response = staticFileService.run(httpRequest);
         assertThat(response.getStatus().getStatusCode()).isEqualTo(200);
         assertThat(response.getHeader().get("Content-Type")).isEqualTo("text/css");
-        assertThat(response.getBody().getPath()).isEqualTo("./webapp/css/styles.css");
+        assertThat(response.getBody()).isEqualTo(getFile("./webapp/css/styles.css"));
     }
 }

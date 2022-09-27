@@ -10,16 +10,19 @@ public class StaticFileService implements Service {
     @Override
     public HttpResponse run(HttpRequest httpRequest) {
         if (!existFile(httpRequest.getPath())) {
-            return new HttpResponse(404)
-                    .setBody(getFile("/404.html"));
+            return new HttpResponse.Builder(404)
+                    .setBody(getFile("/404.html"))
+                    .build();
         }
         if (httpRequest.getPath().endsWith(".css")) {
-            return new HttpResponse(200)
+            return new HttpResponse.Builder(200)
                     .setBody(getFile(httpRequest.getPath()))
-                    .setHeader("Content-Type", "text/css");
+                    .setHeader("Content-Type", "text/css")
+                    .build();
         }
-        return new HttpResponse(200)
-                .setBody(getFile(httpRequest.getPath()));
+        return new HttpResponse.Builder(200)
+                .setBody(getFile(httpRequest.getPath()))
+                .build();
     }
 
     private File getFile(String path) {

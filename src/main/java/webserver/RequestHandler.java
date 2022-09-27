@@ -41,14 +41,20 @@ public class RequestHandler implements Runnable {
     private HttpRequest readRequest(InputStream inputStream) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
         String line = br.readLine();
+
         Map<String, String> statusLineMap = HttpRequestParser.parseStatusLine(line);
         HttpMethod method = HttpMethod.valueOf(statusLineMap.get("method"));
         String path = statusLineMap.get("path");
-        String queryString = statusLineMap.get("queryString");
-        Map<String, String> query = HttpRequestParser.parseQueryString(queryString);
+        HttpRequest.Builder httpRequestBuilder = new HttpRequest.Builder(method, path);
         logger.info("Http Method: {}", method);
         logger.info("Http Path: {}", path);
-        logger.info("Http Query: {}", query);
+
+        String queryString = statusLineMap.get("queryString");
+        if (queryString != null && !queryString.isEmpty()) {
+            Map<String, String> query = HttpRequestParser.parseQueryString(queryString);
+            httpRequestBuilder.setQuery(query);
+            logger.info("Http Query: {}", query);
+        }
 
         Map<String, String> header = new HashMap<>();
         line = br.readLine();
@@ -57,32 +63,27 @@ public class RequestHandler implements Runnable {
             header.put(pair.getKey(), pair.getValue());
             line = br.readLine();
         }
-        logger.info("Http Header: {}", header);
-        Map<String, String> body;
+        if (!header.isEmpty()) {
+            httpRequestBuilder.setHeader(header);
+            logger.info("Http Header: {}", header);
+        }
+
         if (header.containsKey("Content-Length")) {
             int contentLength = Integer.parseInt(header.get("Content-Length"));
             char[] bodyChar = new char[contentLength];
             br.read(bodyChar, 0, contentLength);
-            String bodySting = String.copyValueOf(bodyChar);
-            body = HttpRequestParser.parseBodyString(bodySting);
+            String body = String.copyValueOf(bodyChar);
+            httpRequestBuilder.setBody(body);
             logger.info("Http Body: {}", body);
-        } else {
-            body = new HashMap<>();
         }
-        return new HttpRequest(
-                method,
-                path,
-                query,
-                header,
-                body
-        );
+        return httpRequestBuilder.build();
     }
 
     private void writeResponse(DataOutputStream dos, HttpResponse httpResponse) throws IOException {
         dos.write(httpResponse.getStatusLineToBytes());
         dos.write(httpResponse.getHeaderToBytes());
-        if (httpResponse.getBodyToBytes() != null) {
-            dos.write(httpResponse.getBodyToBytes());
+        if (httpResponse.getBody() != null) {
+            dos.write(httpResponse.getBody());
         }
         dos.flush();
     }

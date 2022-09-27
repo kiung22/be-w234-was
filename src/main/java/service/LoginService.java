@@ -12,14 +12,16 @@ public class LoginService implements Service {
 
     @Override
     public HttpResponse run(HttpRequest httpRequest) {
-        if (login(httpRequest.getBody())) {
-           return new HttpResponse(302)
+        if (login(httpRequest.getBodyToMap())) {
+           return new HttpResponse.Builder(302)
                    .setCookie(new Cookie("logined", "true").setPath("/"))
-                   .setHeader("Location", "/index.html");
+                   .setHeader("Location", "/index.html")
+                   .build();
         }
-        return new HttpResponse(302)
+        return new HttpResponse.Builder(302)
                 .setCookie(new Cookie("logined", "false").setPath("/"))
-                .setHeader("Location", "/user/login_failed.html");
+                .setHeader("Location", "/user/login_failed.html")
+                .build();
     }
 
     private boolean login(Map<String, String> body) {

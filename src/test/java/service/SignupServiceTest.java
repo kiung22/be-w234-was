@@ -17,21 +17,22 @@ class SignupServiceTest {
 
     SignupService signupService = new SignupService();
 
+    private static final HashMap<String, String> header = new HashMap<>();
+
+    static {
+        header.put("Content-Type", "application/x-www-form-urlencoded");
+    }
+
     @Test
     @DisplayName("올바른 유저정보를 받아서 유저 생성에 성공합니다.")
     void CreateUser() {
-        HashMap<String, String> userInfo = new HashMap<>();
-        userInfo.put("userId", "test");
-        userInfo.put("password", "test");
-        userInfo.put("name", "test");
-        userInfo.put("email", "test");
-        HttpRequest httpRequest = new HttpRequest(
+        HttpRequest httpRequest = new HttpRequest.Builder(
                 HttpMethod.POST,
-                "/user/create",
-                new HashMap<>(),
-                new HashMap<>(),
-                userInfo
-        );
+                "/user/create"
+        )
+                .setHeader(header)
+                .setBody("userId=test&password=test&name=test&email=test")
+                .build();
 
         HttpResponse response = signupService.run(httpRequest);
         User user = Database.findUserById("test");
@@ -46,16 +47,13 @@ class SignupServiceTest {
     @Test
     @DisplayName("잘못된 유저정보를 받아서 Exception을 일으킵니다.")
     void throwExceptionWhenCreateUser() {
-        HashMap<String, String> userInfo = new HashMap<>();
-        userInfo.put("userId", "test");
-        userInfo.put("password", "test");
-        HttpRequest httpRequest = new HttpRequest(
+        HttpRequest httpRequest = new HttpRequest.Builder(
                 HttpMethod.POST,
-                "/user/create",
-                new HashMap<>(),
-                new HashMap<>(),
-                userInfo
-        );
+                "/user/create"
+        )
+                .setHeader(header)
+                .setBody("userId=test&password=test")
+                .build();
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> signupService.run(httpRequest));
         assertThat(exception.getMessage()).isEqualTo("유저 정보가 잘못 되었습니다.");

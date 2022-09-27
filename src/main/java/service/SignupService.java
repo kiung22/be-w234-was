@@ -15,9 +15,10 @@ public class SignupService implements Service {
 
     @Override
     public HttpResponse run(HttpRequest httpRequest) {
-        createUser(httpRequest.getBody());
-        return new HttpResponse(302)
-                .setHeader("Location", "/index.html");
+        createUser(httpRequest.getBodyToMap());
+        return new HttpResponse.Builder(302)
+                .setHeader("Location", "/index.html")
+                .build();
     }
 
     private void createUser(Map<String, String> userInfo) {

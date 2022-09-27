@@ -24,12 +24,14 @@ public class UserListService implements Service {
     public HttpResponse run(HttpRequest httpRequest) {
         try {
             String html = insertUserList();
-            return new HttpResponse(200)
-                .setBody(html.getBytes());
+            return new HttpResponse.Builder(200)
+                    .setBody(html.getBytes())
+                    .build();
         } catch (IOException e) {
             logger.error(e.getMessage());
-            return new HttpResponse(500)
-                    .setBody(new File("./webapp/500.html"));
+            return new HttpResponse.Builder(500)
+                    .setBody(new File("./webapp/500.html"))
+                    .build();
         }
     }
 
