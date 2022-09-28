@@ -4,11 +4,14 @@ import db.Database;
 import http.Cookie;
 import http.HttpRequest;
 import http.HttpResponse;
-import model.User;
+import entity.User;
+import repository.UserRepository;
 
 import java.util.Map;
 
 public class LoginService implements Service {
+
+    private final UserRepository userRepository = new UserRepository();
 
     @Override
     public HttpResponse run(HttpRequest httpRequest) {
@@ -30,7 +33,7 @@ public class LoginService implements Service {
         if (userId == null || password == null) {
             return false;
         }
-        User user = Database.findUserById(userId);
+        User user = userRepository.findByUserId(userId);
         return user != null && password.equals(user.getPassword());
     }
 }

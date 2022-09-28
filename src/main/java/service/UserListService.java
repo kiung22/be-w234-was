@@ -3,9 +3,10 @@ package service;
 import db.Database;
 import http.HttpRequest;
 import http.HttpResponse;
-import model.User;
+import entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import repository.UserRepository;
 import webserver.RequestHandler;
 
 import java.io.File;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class UserListService implements Service {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    private final UserRepository userRepository = new UserRepository();
 
     @Override
     public HttpResponse run(HttpRequest httpRequest) {
@@ -42,7 +44,7 @@ public class UserListService implements Service {
     }
 
     private String getUserListToString() {
-        Collection<User> userList = Database.findAll();
+        Collection<User> userList = userRepository.findAll();
         AtomicInteger i = new AtomicInteger(2);
         return userList.stream()
                 .map(user -> String.format(
