@@ -1,6 +1,5 @@
 package service;
 
-import db.Database;
 import http.HttpRequest;
 import http.HttpResponse;
 import entity.User;

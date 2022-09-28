@@ -1,6 +1,5 @@
 package service;
 
-import db.Database;
 import http.HttpRequest;
 import http.HttpResponse;
 import entity.User;
@@ -13,7 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -44,7 +43,7 @@ public class UserListService implements Service {
     }
 
     private String getUserListToString() {
-        Collection<User> userList = userRepository.findAll();
+        List<User> userList = userRepository.findAll();
         AtomicInteger i = new AtomicInteger(2);
         return userList.stream()
                 .map(user -> String.format(

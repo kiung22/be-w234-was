@@ -1,6 +1,5 @@
 package service;
 
-import db.Database;
 import http.Cookie;
 import http.HttpRequest;
 import http.HttpResponse;
@@ -33,7 +32,7 @@ public class LoginService implements Service {
         if (userId == null || password == null) {
             return false;
         }
-        User user = userRepository.findByUserId(userId);
+        User user = userRepository.findById(userId);
         return user != null && password.equals(user.getPassword());
     }
 }
