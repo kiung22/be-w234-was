@@ -3,7 +3,9 @@ package webserver;
 import http.HttpMethod;
 import http.HttpResponse;
 import http.HttpRequest;
+import service.IndexService;
 import service.LoginService;
+import service.MemoService;
 import service.Service;
 import service.SignupService;
 import service.StaticFileService;
@@ -19,10 +21,12 @@ public class Controller {
     private final StaticFileService staticFileService = new StaticFileService();
 
     public Controller() {
+        getMapper.put("/index.html", new IndexService());
         getMapper.put("/user/list.html", new UserListService());
 
         postMapper.put("/user/create", new SignupService());
         postMapper.put("/user/login", new LoginService());
+        postMapper.put("/memo", new MemoService());
     }
 
     public HttpResponse requestMapping(HttpRequest httpRequest) {
