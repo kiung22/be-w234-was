@@ -6,17 +6,15 @@ import http.HttpRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ControllerTest {
+class RequestDispatcherTest {
 
-    Controller controller = new Controller();
+    RequestDispatcher requestDispatcher = new RequestDispatcher();
 
     private byte[] getFile(String path) throws IOException {
         return Files.readAllBytes(Path.of(path));
@@ -29,7 +27,7 @@ class ControllerTest {
                 HttpMethod.GET,
                 "/index.html"
         ).build();
-        HttpResponse httpResponse = controller.requestMapping(httpRequest);
+        HttpResponse httpResponse = requestDispatcher.requestMapping(httpRequest);
 
         assertThat(httpResponse.getStatus().getStatusCode()).isEqualTo(200);
         assertThat(httpResponse.getBody()).isEqualTo(getFile("./webapp/index.html"));
@@ -42,7 +40,7 @@ class ControllerTest {
                 HttpMethod.GET,
                 "/bad-request"
         ).build();
-        HttpResponse httpResponse = controller.requestMapping(httpRequest);
+        HttpResponse httpResponse = requestDispatcher.requestMapping(httpRequest);
 
         assertThat(httpResponse.getStatus().getStatusCode()).isEqualTo(404);
         assertThat(httpResponse.getBody()).isEqualTo(getFile("./webapp/404.html"));
