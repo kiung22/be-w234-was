@@ -1,30 +1,24 @@
-package service;
+package controller;
 
 import http.HttpRequest;
 import http.HttpResponse;
-import entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import repository.UserRepository;
+import service.UserService;
 import webserver.RequestHandler;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
-public class UserListService implements Service {
+public class UserListController implements Controller {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-    private final UserRepository userRepository = new UserRepository();
+    private final UserService userService = new UserService();
 
     @Override
     public HttpResponse run(HttpRequest httpRequest) {
         try {
-            String html = insertUserList();
+            String html = userService.insertUserList();
             return new HttpResponse.Builder(200)
                     .setBody(html.getBytes())
                     .build();
@@ -36,23 +30,4 @@ public class UserListService implements Service {
         }
     }
 
-    private String insertUserList() throws IOException {
-        String html = Files.readString(Path.of("./webapp/user/list.html"));
-        StringBuilder stringBuilder = new StringBuilder(html);
-        return stringBuilder.insert(stringBuilder.lastIndexOf("</tbody>"), getUserListToString()).toString();
-    }
-
-    private String getUserListToString() {
-        List<User> userList = userRepository.findAll();
-        AtomicInteger i = new AtomicInteger(2);
-        return userList.stream()
-                .map(user -> String.format(
-                        "<tr><th scope=\"row\">%d</th> <td>%s</td> <td>%s</td> <td>%s</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td></tr>",
-                        i.incrementAndGet(),
-                        user.getUserId(),
-                        user.getName(),
-                        user.getEmail()
-                ))
-                .collect(Collectors.joining("\n"));
-    }
 }

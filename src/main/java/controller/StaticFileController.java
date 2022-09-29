@@ -1,11 +1,11 @@
-package service;
+package controller;
 
 import http.HttpRequest;
 import http.HttpResponse;
 
 import java.io.File;
 
-public class StaticFileService implements Service {
+public class StaticFileController implements Controller {
 
     @Override
     public HttpResponse run(HttpRequest httpRequest) {

@@ -1,9 +1,9 @@
-package service;
+package controller;
 
 import http.HttpRequest;
 import http.HttpResponse;
 
-public interface Service {
+public interface Controller {
 
     HttpResponse run(HttpRequest httpRequest);
 }
