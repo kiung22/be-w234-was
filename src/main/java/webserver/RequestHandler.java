@@ -1,6 +1,11 @@
 package webserver;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +23,7 @@ public class RequestHandler implements Runnable {
 
     private final Socket connection;
 
-    private final Controller controller = new Controller();
+    private final RequestDispatcher requestDispatcher = new RequestDispatcher();
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
@@ -31,7 +36,7 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             HttpRequest httpRequest = readRequest(in);
             DataOutputStream dos = new DataOutputStream(out);
-            HttpResponse httpResponse = controller.requestMapping(httpRequest);
+            HttpResponse httpResponse = requestDispatcher.requestMapping(httpRequest);
             writeResponse(dos, httpResponse);
         } catch (IOException e) {
             logger.error(e.getMessage());
