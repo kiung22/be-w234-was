@@ -3,30 +3,30 @@ package webserver;
 import http.HttpMethod;
 import http.HttpResponse;
 import http.HttpRequest;
-import service.IndexService;
-import service.LoginService;
-import service.MemoService;
-import service.Service;
-import service.SignupService;
-import service.StaticFileService;
-import service.UserListService;
+import controller.IndexController;
+import controller.LoginController;
+import controller.MemoController;
+import controller.Controller;
+import controller.SignupController;
+import controller.StaticFileController;
+import controller.UserListController;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Controller {
+public class RequestDispatcher {
 
-    private final Map<String, Service> getMapper = new HashMap<>();
-    private final Map<String, Service> postMapper = new HashMap<>();
-    private final StaticFileService staticFileService = new StaticFileService();
+    private final Map<String, Controller> getMapper = new HashMap<>();
+    private final Map<String, Controller> postMapper = new HashMap<>();
+    private final StaticFileController staticFileService = new StaticFileController();
 
-    public Controller() {
-        getMapper.put("/index.html", new IndexService());
-        getMapper.put("/user/list.html", new UserListService());
+    public RequestDispatcher() {
+        getMapper.put("/index.html", new IndexController());
+        getMapper.put("/user/list.html", new UserListController());
 
-        postMapper.put("/user/create", new SignupService());
-        postMapper.put("/user/login", new LoginService());
-        postMapper.put("/memo", new MemoService());
+        postMapper.put("/user/create", new SignupController());
+        postMapper.put("/user/login", new LoginController());
+        postMapper.put("/memo", new MemoController());
     }
 
     public HttpResponse requestMapping(HttpRequest httpRequest) {
