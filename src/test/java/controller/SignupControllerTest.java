@@ -1,22 +1,22 @@
-package service;
+package controller;
 
-import db.Database;
 import http.HttpMethod;
 import http.HttpRequest;
 import http.HttpResponse;
 import entity.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import repository.UserRepository;
 
 import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class SignupServiceTest {
+class SignupControllerTest {
 
-    SignupService signupService = new SignupService();
-
+    private final SignupController signupController = new SignupController();
+    private UserRepository userRepository = new UserRepository();
     private static final HashMap<String, String> header = new HashMap<>();
 
     static {
@@ -34,8 +34,8 @@ class SignupServiceTest {
                 .setBody("userId=test&password=test&name=test&email=test")
                 .build();
 
-        HttpResponse response = signupService.run(httpRequest);
-        User user = Database.findUserById("test");
+        HttpResponse response = signupController.run(httpRequest);
+        User user = userRepository.findById("test");
         assertThat(user.getUserId()).isEqualTo("test");
         assertThat(user.getPassword()).isEqualTo("test");
         assertThat(user.getName()).isEqualTo("test");
@@ -55,7 +55,7 @@ class SignupServiceTest {
                 .setBody("userId=test&password=test")
                 .build();
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> signupService.run(httpRequest));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> signupController.run(httpRequest));
         assertThat(exception.getMessage()).isEqualTo("유저 정보가 잘못 되었습니다.");
     }
 }

@@ -1,6 +1,5 @@
-package service;
+package controller;
 
-import db.Database;
 import http.HttpMethod;
 import http.HttpRequest;
 import http.HttpResponse;
@@ -8,21 +7,22 @@ import entity.User;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import repository.UserRepository;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class LoginServiceTest {
+class LoginControllerTest {
 
-    LoginService loginService = new LoginService();
-
+    private final LoginController loginController = new LoginController();
+    private static final UserRepository userRepository = new UserRepository();
     private static final Map<String, String> header = new HashMap<>();
 
     @BeforeAll
     static void setup() {
-        Database.addUser(new User(
+        userRepository.save(new User(
                 "test",
                 "test",
                 "test",
@@ -40,7 +40,7 @@ class LoginServiceTest {
                 .setBody("userId=test&password=test")
                 .build();
 
-        HttpResponse response = loginService.run(httpRequest);
+        HttpResponse response = loginController.run(httpRequest);
         assertThat(response.getStatus().getStatusCode()).isEqualTo(302);
         assertThat(response.getHeader().get("Location")).isEqualTo("/index.html");
         assertThat(response.getCookie().get("logined").getValue()).isEqualTo("true");
@@ -55,7 +55,7 @@ class LoginServiceTest {
                 .setBody("userId=incorrect&password=incorrect")
                 .build();
 
-        HttpResponse response = loginService.run(httpRequest);
+        HttpResponse response = loginController.run(httpRequest);
         assertThat(response.getStatus().getStatusCode()).isEqualTo(302);
         assertThat(response.getHeader().get("Location")).isEqualTo("/user/login_failed.html");
         assertThat(response.getCookie().get("logined").getValue()).isEqualTo("false");

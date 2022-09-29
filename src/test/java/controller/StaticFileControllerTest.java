@@ -1,4 +1,4 @@
-package service;
+package controller;
 
 import http.HttpMethod;
 import http.HttpRequest;
@@ -9,14 +9,12 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class StaticFileServiceTest {
+class StaticFileControllerTest {
 
-    StaticFileService staticFileService = new StaticFileService();
+    StaticFileController staticFileController = new StaticFileController();
 
     private byte[] getFile(String path) throws IOException {
         return Files.readAllBytes(Path.of(path));
@@ -30,7 +28,7 @@ class StaticFileServiceTest {
                 "/index.html"
         ).build();
 
-        HttpResponse response = staticFileService.run(httpRequest);
+        HttpResponse response = staticFileController.run(httpRequest);
         assertThat(response.getStatus().getStatusCode()).isEqualTo(200);
         assertThat(response.getHeader().get("Content-Type")).isEqualTo("text/html;charset-utf-8");
         assertThat(response.getBody()).isEqualTo(getFile("./webapp/index.html"));
@@ -44,7 +42,7 @@ class StaticFileServiceTest {
                 "/not-found.html"
         ).build();
 
-        HttpResponse response = staticFileService.run(httpRequest);
+        HttpResponse response = staticFileController.run(httpRequest);
         assertThat(response.getStatus().getStatusCode()).isEqualTo(404);
         assertThat(response.getHeader().get("Content-Type")).isEqualTo("text/html;charset-utf-8");
         assertThat(response.getBody()).isEqualTo(getFile("./webapp/404.html"));
@@ -58,7 +56,7 @@ class StaticFileServiceTest {
                 "/css/styles.css"
         ).build();
 
-        HttpResponse response = staticFileService.run(httpRequest);
+        HttpResponse response = staticFileController.run(httpRequest);
         assertThat(response.getStatus().getStatusCode()).isEqualTo(200);
         assertThat(response.getHeader().get("Content-Type")).isEqualTo("text/css");
         assertThat(response.getBody()).isEqualTo(getFile("./webapp/css/styles.css"));
