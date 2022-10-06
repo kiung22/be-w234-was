@@ -74,9 +74,7 @@ public class HttpRequest {
         public Builder setHeader(Map<String, String> header) {
             this.header = header;
             if (header.containsKey("Cookie")) {
-                Map<String, String> cookieStringMap = HttpRequestParser.parseCookies(this.header.get("Cookie"));
-                cookie = cookieStringMap.entrySet().stream()
-                        .collect(Collectors.toMap(e -> e.getKey(), e -> new Cookie(e.getKey(), e.getValue())));
+                cookie = HttpRequestParser.parseCookies(this.header.get("Cookie"));
             }
             return this;
         }

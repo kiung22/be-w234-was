@@ -35,8 +35,9 @@ public final class HttpRequestParser {
         return parseValues(bodyString, "&");
     }
 
-    public static Map<String, String> parseCookies(String cookies) {
-        return parseValues(cookies, ";");
+    public static Map<String, Cookie> parseCookies(String cookies) {
+        return parseValues(cookies, ";").entrySet().stream()
+                .collect(Collectors.toMap(e -> e.getKey(), e -> new Cookie(e.getKey(), e.getValue())));
     }
 
     private static Map<String, String> parseValues(String values, String separator) {
