@@ -22,11 +22,16 @@ public class HttpResponse {
     private static final String VERSION = "1.1";
     private static final String CONTENT_TYPE_TEXT_HTML = "text/html;charset=utf-8";
 
-    private HttpResponse(Builder builder) {
-        status = builder.status;
-        header = builder.header;
-        cookie = builder.cookie;
-        body = builder.body;
+    private HttpResponse(
+            HttpStatus status,
+            Map<String, String> header,
+            Map<String, Cookie> cookie,
+            byte[] body
+    ) {
+        this.status = status;
+        this.header = header;
+        this.cookie = cookie;
+        this.body = body;
     }
 
     public HttpStatus getStatus() {
@@ -100,7 +105,12 @@ public class HttpResponse {
         }
 
         public HttpResponse build() {
-            return new HttpResponse(this);
+            return new HttpResponse(
+                    this.status,
+                    this.header,
+                    this.cookie,
+                    this.body
+            );
         }
     }
 }

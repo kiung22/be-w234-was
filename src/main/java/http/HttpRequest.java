@@ -12,13 +12,20 @@ public class HttpRequest {
     private final String body;
     private final Map<String, Cookie> cookie;
 
-    private HttpRequest(Builder builder) {
-        method = builder.method;
-        path = builder.path;
-        query = builder.query;
-        header = builder.header;
-        body = builder.body;
-        cookie = builder.cookie;
+    private HttpRequest(
+            HttpMethod method,
+            String path,
+            Map<String, String> query,
+            Map<String, String> header,
+            String body,
+            Map<String, Cookie> cookie
+    ) {
+        this.method = method;
+        this.path = path;
+        this.query = query;
+        this.header = header;
+        this.body = body;
+        this.cookie = cookie;
     }
 
     public HttpMethod getMethod() {
@@ -84,7 +91,14 @@ public class HttpRequest {
         }
 
         public HttpRequest build() {
-            return new HttpRequest(this);
+            return new HttpRequest(
+                    this.method,
+                    this.path,
+                    this.query,
+                    this.header,
+                    this.body,
+                    this.cookie
+            );
         }
     }
 }
