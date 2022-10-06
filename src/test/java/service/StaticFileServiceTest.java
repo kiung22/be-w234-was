@@ -32,7 +32,7 @@ class StaticFileServiceTest {
 
         HttpResponse response = staticFileService.run(httpRequest);
         assertThat(response.getStatus().getStatusCode()).isEqualTo(200);
-        assertThat(response.getHeader().get("Content-Type")).isEqualTo("text/html;charset-utf-8");
+        assertThat(response.getHeader().get("Content-Type")).isEqualTo("text/html;charset=utf-8");
         assertThat(response.getBody()).isEqualTo(getFile("./webapp/index.html"));
     }
 
@@ -46,7 +46,7 @@ class StaticFileServiceTest {
 
         HttpResponse response = staticFileService.run(httpRequest);
         assertThat(response.getStatus().getStatusCode()).isEqualTo(404);
-        assertThat(response.getHeader().get("Content-Type")).isEqualTo("text/html;charset-utf-8");
+        assertThat(response.getHeader().get("Content-Type")).isEqualTo("text/html;charset=utf-8");
         assertThat(response.getBody()).isEqualTo(getFile("./webapp/404.html"));
     }
 
