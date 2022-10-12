@@ -1,6 +1,7 @@
 package service;
 
 import entity.User;
+import exception.FileReadFailedException;
 import http.HttpRequest;
 import repository.UserRepository;
 
@@ -54,10 +55,15 @@ public class UserService {
         return user != null && password.equals(user.getPassword());
     }
 
-    public String insertUserList() throws IOException {
-        String html = Files.readString(Path.of("./webapp/user/list.html"));
-        StringBuilder stringBuilder = new StringBuilder(html);
-        return stringBuilder.insert(stringBuilder.lastIndexOf("</tbody>"), getUserListToString()).toString();
+    public String insertUserList() {
+        String path = "./webapp/user/list.html";
+        try {
+            String html = Files.readString(Path.of(path));
+            StringBuilder stringBuilder = new StringBuilder(html);
+            return stringBuilder.insert(stringBuilder.lastIndexOf("</tbody>"), getUserListToString()).toString();
+        } catch (IOException e) {
+            throw new FileReadFailedException(path);
+        }
     }
 
     private String getUserListToString() {
