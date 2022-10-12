@@ -14,7 +14,11 @@ import java.util.stream.Collectors;
 
 public class MemoService {
 
-    private final MemoRepository memoRepository = new MemoRepository();
+    private final MemoRepository memoRepository;
+
+    public MemoService(MemoRepository memoRepository) {
+        this.memoRepository = memoRepository;
+    }
 
     public void createMemo(Map<String, String> body) {
         if (validateBody(body)) {

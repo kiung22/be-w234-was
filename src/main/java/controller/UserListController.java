@@ -13,7 +13,11 @@ import java.io.IOException;
 public class UserListController implements Controller {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-    private final UserService userService = new UserService();
+    private final UserService userService;
+
+    public UserListController(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public HttpResponse run(HttpRequest httpRequest) {
@@ -29,5 +33,4 @@ public class UserListController implements Controller {
                     .build();
         }
     }
-
 }

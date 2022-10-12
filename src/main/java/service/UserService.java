@@ -14,7 +14,11 @@ import java.util.stream.Collectors;
 
 public class UserService {
 
-    private final UserRepository userRepository = new UserRepository();
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public boolean checkLogin(HttpRequest httpRequest) {
         return "true".equals(httpRequest.getCookie().get("logined").getValue());

@@ -7,6 +7,7 @@ import entity.User;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import repository.RepositoryContainer;
 import repository.UserRepository;
 
 import java.util.HashMap;
@@ -16,8 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class LoginControllerTest {
 
-    private final LoginController loginController = new LoginController();
-    private static final UserRepository userRepository = new UserRepository();
+    private final LoginController loginController = ControllerContainer.getLoginController();
+    private static final UserRepository userRepository = RepositoryContainer.getUserRepository();
     private static final Map<String, String> header = new HashMap<>();
 
     @BeforeAll

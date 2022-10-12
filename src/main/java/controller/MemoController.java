@@ -7,8 +7,16 @@ import service.UserService;
 
 public class MemoController implements Controller {
 
-    private final MemoService memoService = new MemoService();
-    private final UserService userService = new UserService();
+    private final MemoService memoService;
+    private final UserService userService;
+
+    public MemoController(
+            MemoService memoService,
+            UserService userService
+    ) {
+        this.memoService = memoService;
+        this.userService = userService;
+    }
 
     @Override
     public HttpResponse run(HttpRequest httpRequest) {

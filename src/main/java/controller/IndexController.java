@@ -14,7 +14,11 @@ import java.io.IOException;
 public class IndexController implements Controller {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-    private final MemoService memoService = new MemoService();
+    private final MemoService memoService;
+
+    public IndexController(MemoService memoService) {
+        this.memoService = memoService;
+    }
 
     @Override
     public HttpResponse run(HttpRequest httpRequest) {
