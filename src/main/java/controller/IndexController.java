@@ -22,16 +22,9 @@ public class IndexController implements Controller {
 
     @Override
     public HttpResponse run(HttpRequest httpRequest) {
-        try {
-            String html = memoService.insertMemoList();
-            return new HttpResponse.Builder(200)
-                    .setBody(html.getBytes())
-                    .build();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-            return new HttpResponse.Builder(500)
-                    .setBody(new File("./webapp/500.html"))
-                    .build();
-        }
+        String html = memoService.insertMemoList();
+        return new HttpResponse.Builder(200)
+                .setBody(html.getBytes())
+                .build();
     }
 }
