@@ -8,7 +8,6 @@ import webserver.RequestHandler;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.NoResultException;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
@@ -28,6 +27,7 @@ public class Repository<T, I> {
         } catch (Exception e) {
             logger.error(e.getMessage());
             tx.rollback();
+            throw new RuntimeException("Failed to save entity. " + e.getMessage());
         } finally {
             em.close();
         }
@@ -35,14 +35,7 @@ public class Repository<T, I> {
 
     public T findById(I id) {
         EntityManager em = emf.createEntityManager();
-        String jpql = "SELECT e FROM " + entityType.getName() + " e WHERE e.id = :id";
-        try {
-            return em.createQuery(jpql, entityType)
-                    .setParameter("id", id)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
+        return em.find(entityType, id);
     }
 
     public List<T> findAll() {

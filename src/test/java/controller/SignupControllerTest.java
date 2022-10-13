@@ -6,6 +6,7 @@ import http.HttpResponse;
 import entity.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import repository.RepositoryContainer;
 import repository.UserRepository;
 
 import java.util.HashMap;
@@ -15,8 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SignupControllerTest {
 
-    private final SignupController signupController = new SignupController();
-    private UserRepository userRepository = new UserRepository();
+    private final SignupController signupController = ControllerContainer.getSignupController();
+    private UserRepository userRepository = RepositoryContainer.getUserRepository();
     private static final HashMap<String, String> header = new HashMap<>();
 
     static {

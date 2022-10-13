@@ -7,7 +7,11 @@ import service.UserService;
 
 public class LoginController implements Controller {
 
-    private final UserService userService = new UserService();
+    private final UserService userService;
+
+    public LoginController(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public HttpResponse run(HttpRequest httpRequest) {

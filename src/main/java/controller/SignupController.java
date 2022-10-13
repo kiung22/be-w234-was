@@ -6,7 +6,11 @@ import service.UserService;
 
 public class SignupController implements Controller {
 
-    private final UserService userService = new UserService();
+    private final UserService userService;
+
+    public SignupController(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public HttpResponse run(HttpRequest httpRequest) {

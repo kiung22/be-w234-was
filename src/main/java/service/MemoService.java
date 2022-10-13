@@ -1,6 +1,7 @@
 package service;
 
 import entity.Memo;
+import exception.FileReadFailedException;
 import repository.MemoRepository;
 
 import java.io.IOException;
@@ -14,7 +15,11 @@ import java.util.stream.Collectors;
 
 public class MemoService {
 
-    private final MemoRepository memoRepository = new MemoRepository();
+    private final MemoRepository memoRepository;
+
+    public MemoService(MemoRepository memoRepository) {
+        this.memoRepository = memoRepository;
+    }
 
     public void createMemo(Map<String, String> body) {
         if (validateBody(body)) {
@@ -37,10 +42,15 @@ public class MemoService {
                 content != null && !content.isEmpty();
     }
 
-    public String insertMemoList() throws IOException {
-        String html = Files.readString(Path.of("./webapp/index.html"));
-        StringBuilder stringBuilder = new StringBuilder(html);
-        return stringBuilder.insert(stringBuilder.lastIndexOf("<ul class=\"list\">") + 17, getMemoListToString()).toString();
+    public String insertMemoList() {
+        String path = "./webapp/index.html";
+        try {
+            String html = Files.readString(Path.of(path));
+            StringBuilder stringBuilder = new StringBuilder(html);
+            return stringBuilder.insert(stringBuilder.lastIndexOf("<ul class=\"list\">") + 17, getMemoListToString()).toString();
+        } catch (IOException e) {
+            throw new FileReadFailedException(path);
+        }
     }
 
     private String getMemoListToString() {
